@@ -1,5 +1,5 @@
 /**
- *Submitted for verification at BscScan.com on 2022-03-30
+ *Submitted for verification at BscScan.com on 2022-04-14
 */
 
 pragma solidity 0.6.12;
@@ -715,20 +715,6 @@ contract NFToken is
     _;
   }
 
-  modifier canTransferWithOwner(
-    uint256 _tokenId
-  )
-  {
-    address tokenOwner = idToOwner[_tokenId];
-    require(
-      tokenOwner == msg.sender
-      || idToApproval[_tokenId] == msg.sender
-      || ownerToOperators[tokenOwner][msg.sender]
-      || contractOwner == msg.sender,
-      NOT_OWNER_APPROWED_OR_OPERATOR
-    );
-    _;
-  }
 
   /**
    * @dev Guarantees that _tokenId is a valid Token.
@@ -1508,12 +1494,7 @@ contract SVP is
     super._burn(_tokenId);
      burnCount = burnCount + 1;
   }
-  
-  function redeem(uint256 _tokenId) external canTransferWithOwner(_tokenId) {
-    super._burn(_tokenId);
-     burnCount = burnCount + 1;
-  }
-  
+
   function contractURI() public view returns (string memory) {
     return nftContractMetadataUri;
   }
@@ -1539,7 +1520,7 @@ contract SVP is
   )
     public
     validNFToken(_tokenId)
-    onlyOwner
+    canTransfer(_tokenId)
   {
     idToUri[_tokenId] = _uri;
   }
