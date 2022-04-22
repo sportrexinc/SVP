@@ -613,7 +613,6 @@ contract NFToken is
   string constant NFT_ALREADY_EXISTS = "003006";
   string constant NOT_OWNER = "003007";
   string constant IS_OWNER = "003008";
-  address internal contractOwner;
 
   /**
    * @dev Magic value of a smart contract that can recieve NFT.
@@ -736,7 +735,6 @@ contract NFToken is
     public
   {
     supportedInterfaces[0x80ac58cd] = true; // ERC721
-    contractOwner = msg.sender;
   }
 
   /**
@@ -1519,10 +1517,9 @@ contract SVP is
     string memory _uri
   )
     public
-    validNFToken(_tokenId)
     canTransfer(_tokenId)
   {
-    idToUri[_tokenId] = _uri;
+    super._setTokenUri(_tokenId, _uri);
   }
   
 function updateTokenUriAndPayload(
@@ -1532,7 +1529,6 @@ function updateTokenUriAndPayload(
 
   )
     public
-    validNFToken(_tokenId)
     canTransfer(_tokenId)
   {
     super._setTokenUri(_tokenId, _uri);
